@@ -1,0 +1,16 @@
+*.suo
+*.user
+*sln.docstates
+*GeneratedMSBuildEditorConfig.editorconfig
+
+debug/
+Debug/
+release/
+Release/
+x64/
+bin/
+Bin/
+obj/
+Obj/
+
+*.vs
