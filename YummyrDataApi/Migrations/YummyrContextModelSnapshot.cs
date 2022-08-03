@@ -38,7 +38,7 @@ namespace YummyrDataApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("DietaryInfo");
+                    b.ToTable("DietaryInfo", (string)null);
                 });
 
             modelBuilder.Entity("YummyrDataApi.Models.Ingredient", b =>
@@ -54,7 +54,7 @@ namespace YummyrDataApi.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Ingredients");
+                    b.ToTable("Ingredients", (string)null);
                 });
 #pragma warning restore 612, 618
         }
