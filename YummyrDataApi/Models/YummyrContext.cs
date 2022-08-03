@@ -10,5 +10,6 @@ namespace YummyrDataApi.Models
         }
 
         public DbSet<Ingredient>? Ingredients { get; set; } = null;
+        public DbSet<DietaryInfo>? DietaryInfo { get; set; } = null;
     }
 }
