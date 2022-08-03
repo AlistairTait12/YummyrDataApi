@@ -11,5 +11,14 @@ namespace YummyrDataApi.Models
 
         public DbSet<Ingredient>? Ingredients { get; set; } = null;
         public DbSet<DietaryInfo>? DietaryInfo { get; set; } = null;
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<DietaryInfo>()
+                .Property(e => e.DietaryType)
+                .HasConversion(
+                    v => v.ToString(),
+                    v => (DietaryType)Enum.Parse(typeof(DietaryType), v));
+        }
     }
 }

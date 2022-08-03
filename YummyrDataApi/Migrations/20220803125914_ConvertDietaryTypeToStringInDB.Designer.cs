@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using YummyrDataApi.Models;
 
@@ -10,9 +11,10 @@ using YummyrDataApi.Models;
 namespace YummyrDataApi.Migrations
 {
     [DbContext(typeof(YummyrContext))]
-    partial class YummyrContextModelSnapshot : ModelSnapshot
+    [Migration("20220803125914_ConvertDietaryTypeToStringInDB")]
+    partial class ConvertDietaryTypeToStringInDB
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -32,9 +34,6 @@ namespace YummyrDataApi.Migrations
                     b.Property<string>("DietaryType")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
-
-                    b.Property<int>("IngredientId")
-                        .HasColumnType("int");
 
                     b.HasKey("Id");
 
