@@ -15,10 +15,10 @@ namespace YummyrDataApi.Models
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DietaryInfo>()
-                .Property(e => e.DietaryType)
+                .Property(e => e.DietaryValue)
                 .HasConversion(
                     v => v.ToString(),
-                    v => (DietaryType)Enum.Parse(typeof(DietaryType), v));
+                    v => (DietaryValue)Enum.Parse(typeof(DietaryValue), v));
         }
     }
 }

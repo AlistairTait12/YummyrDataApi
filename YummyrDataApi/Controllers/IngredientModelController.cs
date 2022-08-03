@@ -28,7 +28,7 @@ namespace YummyrDataApi.Controllers
             return new IngredientModel
             {
                 IngredientName = ingredient.Name,
-                DietaryTypes = dietaryInfo.Select(info => info.DietaryType).ToList()
+                DietaryValues = dietaryInfo.Select(info => info.DietaryValue).ToList()
             };
         }
     }

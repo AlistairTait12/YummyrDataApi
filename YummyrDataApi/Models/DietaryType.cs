@@ -1,6 +1,6 @@
 ﻿namespace YummyrDataApi.Models
 {
-    public enum DietaryType
+    public enum DietaryValue
     {
         Vegetarian,
         Vegan,
