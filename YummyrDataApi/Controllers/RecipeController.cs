@@ -37,6 +37,11 @@ namespace YummyrDataApi.Controllers
             var recipe = _context.Recipes
                 .Where(dbRecipe => dbRecipe.Id == id).FirstOrDefault();
 
+            if (recipe is null)
+            {
+                return NotFound();
+            }
+
             var ingredientQuantities = _context.IngredientQuantities
                 .Where(dbQuantity => dbQuantity.RecipeId == id)
                 .ToList();
