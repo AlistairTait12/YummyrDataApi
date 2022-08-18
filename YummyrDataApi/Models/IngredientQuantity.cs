@@ -15,7 +15,7 @@ namespace YummyrDataApi.Models
         [Column(Order = 2)]
         public int IngredientId { get; set; }
 
-        public int Quantity { get; set; }
+        public float Quantity { get; set; }
 
         public UnitOfMeasure UnitOfMeasure { get; set; }
     }
