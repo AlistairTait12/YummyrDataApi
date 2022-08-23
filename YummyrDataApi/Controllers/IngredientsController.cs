@@ -1,15 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using YummyrDataApi.Models;
 
 namespace YummyrDataApi.Controllers
 {
-    [Route("api/notUsed")]
+    [Route("api/ingredients")]
     [ApiController]
     public class IngredientsController : ControllerBase
     {
@@ -24,10 +19,11 @@ namespace YummyrDataApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Ingredient>>> GetIngredients()
         {
-          if (_context.Ingredients == null)
-          {
-              return NotFound();
-          }
+            if (_context.Ingredients == null)
+            {
+                return NotFound();
+            }
+
             return await _context.Ingredients.ToListAsync();
         }
 
@@ -35,10 +31,11 @@ namespace YummyrDataApi.Controllers
         [HttpGet("{id}")]
         public async Task<ActionResult<Ingredient>> GetIngredient(int id)
         {
-          if (_context.Ingredients == null)
-          {
+            if (_context.Ingredients == null)
+            {
               return NotFound();
-          }
+            }
+
             var ingredient = await _context.Ingredients.FindAsync(id);
 
             if (ingredient == null)
@@ -85,10 +82,11 @@ namespace YummyrDataApi.Controllers
         [HttpPost]
         public async Task<ActionResult<Ingredient>> PostIngredient(Ingredient ingredient)
         {
-          if (_context.Ingredients == null)
-          {
-              return Problem("Entity set 'YummyrContext.Ingredients'  is null.");
-          }
+            if (_context.Ingredients == null)
+            {
+                return Problem("Entity set 'YummyrContext.Ingredients'  is null.");
+            }
+
             _context.Ingredients.Add(ingredient);
             await _context.SaveChangesAsync();
 
@@ -103,7 +101,9 @@ namespace YummyrDataApi.Controllers
             {
                 return NotFound();
             }
+
             var ingredient = await _context.Ingredients.FindAsync(id);
+
             if (ingredient == null)
             {
                 return NotFound();
