@@ -10,6 +10,8 @@
         Lb,
         Oz,
         Tsp,
-        Tbsp
+        Tbsp,
+        Slice,
+        Item
     }
 }
