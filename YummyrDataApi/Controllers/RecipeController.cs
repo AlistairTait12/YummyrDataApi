@@ -34,6 +34,7 @@ namespace YummyrDataApi.Controllers
         // GET: api/recipes/5
         public async Task<ActionResult<RecipeModel>> GetRecipe(int id)
         {
+            // TODO: Get the Recipe model from a dedicated repository
             var recipe = _context.Recipes
                 .Where(dbRecipe => dbRecipe.Id == id).FirstOrDefault();
 
@@ -42,14 +43,18 @@ namespace YummyrDataApi.Controllers
                 return NotFound();
             }
 
+            // TODO: IngredientQuantity repository, so we can implement a method of getting
+            // ingredient quanities linked to a certain recipe
             var ingredientQuantities = _context.IngredientQuantities
                 .Where(dbQuantity => dbQuantity.RecipeId == id)
                 .ToList();
 
+            // TODO: Same with a RecipeStepRepository
             var recipeSteps = _context.RecipeSteps
                 .Where(dbStep => dbStep.RecipeId == id)
                 .ToList();
 
+            // TODO: GetIngredientsForRecipe(int id)
             var ingredients = _context.Ingredients
                 .Where(dbIngredient => 
                 ingredientQuantities
