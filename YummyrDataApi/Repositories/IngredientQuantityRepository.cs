@@ -16,6 +16,6 @@ namespace YummyrDataApi.Repositories
                 .ToList();
         }
 
-        public YummyrContext? YummyrContext => Context as YummyrContext;
+        private YummyrContext? YummyrContext => Context as YummyrContext;
     }
 }

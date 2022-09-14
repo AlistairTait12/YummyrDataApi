@@ -17,6 +17,15 @@ namespace YummyrDataApi.Repositories
                 .ToList();
         }
 
-        public YummyrContext? YummyrContext => Context as YummyrContext;
+        public IEnumerable<Ingredient> GetIngredientsForIngredientQuantities(IEnumerable<IngredientQuantity> ingredientQuantities)
+        {
+            return YummyrContext.Ingredients
+                .Where(ingredient => ingredientQuantities
+                    .Select(quantity => quantity.IngredientId)
+                    .Contains(ingredient.Id))
+                .ToList();
+        }
+
+        private YummyrContext? YummyrContext => Context as YummyrContext;
     }
 }
