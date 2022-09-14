@@ -11,9 +11,9 @@ namespace YummyrDataApi.ModelBuilders
 
         public RecipeModel Build(
             Recipe recipe, 
-            List<IngredientQuantity> ingredientQuantities,
-            List<Ingredient> ingredients,
-            List<RecipeStep> recipeSteps)
+            IEnumerable<IngredientQuantity> ingredientQuantities,
+            IEnumerable<Ingredient> ingredients,
+            IEnumerable<RecipeStep> recipeSteps)
         {
             var ingredientQuantityModels = GetIngredientQuantityModels(ingredientQuantities, ingredients);
 
@@ -25,7 +25,7 @@ namespace YummyrDataApi.ModelBuilders
             };
         }
 
-        private List<IngredientQuantityModel> GetIngredientQuantityModels(List<IngredientQuantity> ingredientQuantities, List<Ingredient> ingredients)
+        private List<IngredientQuantityModel> GetIngredientQuantityModels(IEnumerable<IngredientQuantity> ingredientQuantities, IEnumerable<Ingredient> ingredients)
         {
             return ingredientQuantities.Select(ingredientQuantity => 
                 new IngredientQuantityModel

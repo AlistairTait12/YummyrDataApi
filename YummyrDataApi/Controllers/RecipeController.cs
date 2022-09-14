@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using YummyrDataApi.ModelBuilders;
 using YummyrDataApi.Models;
+using YummyrDataApi.Repositories;
 
 namespace YummyrDataApi.Controllers
 {
@@ -11,11 +12,20 @@ namespace YummyrDataApi.Controllers
     {
         private readonly YummyrContext _context;
         private readonly RecipeModelBuilder _recipeModelBuilder;
+        private readonly RecipeRepository _recipeRepository;
+        private readonly RecipeStepRepository _recipeStepRepository;
+        private readonly IngredientQuantityRepository _ingredientQuantityRepository;
+        private readonly IngredientRepository _ingredientRepository;
 
         public RecipeController(YummyrContext context)
         {
             _context = context;
             _recipeModelBuilder = new RecipeModelBuilder();
+
+            _recipeRepository = new RecipeRepository(_context);
+            _recipeStepRepository = new RecipeStepRepository(_context);
+            _ingredientQuantityRepository = new IngredientQuantityRepository(_context);
+            _ingredientRepository = new IngredientRepository(_context);
         }
 
         // GET: api/recipes
@@ -34,34 +44,19 @@ namespace YummyrDataApi.Controllers
         // GET: api/recipes/5
         public async Task<ActionResult<RecipeModel>> GetRecipe(int id)
         {
-            // TODO: Get the Recipe model from a dedicated repository
-            var recipe = _context.Recipes
-                .Where(dbRecipe => dbRecipe.Id == id).FirstOrDefault();
+            var recipe = _recipeRepository.GetRecipe(id);
 
             if (recipe is null)
             {
                 return NotFound();
             }
 
-            // TODO: IngredientQuantity repository, so we can implement a method of getting
-            // ingredient quanities linked to a certain recipe
-            var ingredientQuantities = _context.IngredientQuantities
-                .Where(dbQuantity => dbQuantity.RecipeId == id)
-                .ToList();
-
-            // TODO: Same with a RecipeStepRepository
-            var recipeSteps = _context.RecipeSteps
-                .Where(dbStep => dbStep.RecipeId == id)
-                .ToList();
-
-            // TODO: GetIngredientsForRecipe(int id)
-            var ingredients = _context.Ingredients
-                .Where(dbIngredient => 
-                ingredientQuantities
-                .Select(quantity => quantity.IngredientId)
-                .ToList()
-                .Contains(dbIngredient.Id))
-                .ToList();
+            var ingredientQuantities = _ingredientQuantityRepository
+                .GetIngredientQuantitiesForRecipe(id);
+            var recipeSteps = _recipeStepRepository
+                .GetRecipeStepsForRecipe(id);
+            var ingredients = _ingredientRepository
+                .GetIngredientsForIngredientQuantities(ingredientQuantities);
 
             return _recipeModelBuilder.Build(recipe, ingredientQuantities, ingredients, recipeSteps);
         }

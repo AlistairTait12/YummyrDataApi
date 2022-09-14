@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using System.Linq;
 using System.Linq.Expressions;
+using YummyrDataApi.Models;
 
 namespace YummyrDataApi.Repositories
 {
@@ -12,6 +13,8 @@ namespace YummyrDataApi.Repositories
         {
             Context = context;
         }
+
+        protected YummyrContext? YummyrContext => Context as YummyrContext;
 
         public TEntity Get(int id)
         {

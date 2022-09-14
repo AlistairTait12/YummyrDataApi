@@ -25,7 +25,5 @@ namespace YummyrDataApi.Repositories
                     .Contains(ingredient.Id))
                 .ToList();
         }
-
-        private YummyrContext? YummyrContext => Context as YummyrContext;
     }
 }

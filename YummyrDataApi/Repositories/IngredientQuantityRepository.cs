@@ -11,11 +11,7 @@ namespace YummyrDataApi.Repositories
 
         public IEnumerable<IngredientQuantity> GetIngredientQuantitiesForRecipe(int recipeId)
         {
-            return YummyrContext.IngredientQuantities
-                .Where(ingredientQuantity => ingredientQuantity.RecipeId == recipeId)
-                .ToList();
+            return Find(ingredientQuantity => ingredientQuantity.RecipeId == recipeId).ToList();
         }
-
-        private YummyrContext? YummyrContext => Context as YummyrContext;
     }
 }
