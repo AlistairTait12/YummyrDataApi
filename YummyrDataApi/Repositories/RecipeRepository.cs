@@ -10,5 +10,7 @@ namespace YummyrDataApi.Repositories
         }
 
         public Recipe GetRecipe(int id) => Get(id);
+
+        public IEnumerable<Recipe> GetAllRecipes() => GetAll();
     }
 }

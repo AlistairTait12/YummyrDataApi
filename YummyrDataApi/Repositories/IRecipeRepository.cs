@@ -5,5 +5,7 @@ namespace YummyrDataApi.Repositories
     public interface IRecipeRepository : IRepository<Recipe>
     {
         Recipe GetRecipe(int id);
+
+        IEnumerable<Recipe> GetAllRecipes();
     }
 }

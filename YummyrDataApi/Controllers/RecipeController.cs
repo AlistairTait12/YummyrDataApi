@@ -32,12 +32,12 @@ namespace YummyrDataApi.Controllers
         [HttpGet]
         public async Task<ActionResult<IEnumerable<Recipe>>> GetRecipes()
         {
-            if (_context.Recipes is null)
+            if (_recipeRepository.GetAllRecipes() is null)
             {
                 return NotFound();
             }
 
-            return await _context.Recipes.ToListAsync();
+            return _recipeRepository.GetAllRecipes().ToList();
         }
 
         [HttpGet("{id}")]
