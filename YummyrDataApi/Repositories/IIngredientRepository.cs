@@ -2,7 +2,7 @@
 
 namespace YummyrDataApi.Repositories
 {
-    public interface IIngredientRepository
+    public interface IIngredientRepository : IRepository<Ingredient>
     {
         IEnumerable<Ingredient> GetIngredientsBeginningWith(char letter);
     }

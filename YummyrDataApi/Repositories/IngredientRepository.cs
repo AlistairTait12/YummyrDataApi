@@ -11,7 +11,15 @@ namespace YummyrDataApi.Repositories
 
         public IEnumerable<Ingredient> GetIngredientsBeginningWith(char letter)
         {
-            return new List<Ingredient>();
+            return YummyrContext.Ingredients
+                .Where(ingredient => ingredient.Name.StartsWith(letter))
+                .OrderBy(ingredient => ingredient.Name)
+                .ToList();
+        }
+
+        public YummyrContext YummyrContext
+        {
+            get { return Context as YummyrContext;  }
         }
     }
 }

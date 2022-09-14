@@ -6,9 +6,9 @@ namespace YummyrDataApi.Repositories
 {
     public class Repository<TEntity> : IRepository<TEntity> where TEntity : class
     {
-        protected readonly DbContext? Context;
+        protected readonly DbContext Context;
 
-        public Repository(DbContext? context)
+        public Repository(DbContext context)
         {
             Context = context;
         }
