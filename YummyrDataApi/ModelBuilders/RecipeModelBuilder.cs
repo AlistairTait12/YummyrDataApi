@@ -3,14 +3,14 @@ using YummyrDataApi.Models;
 
 namespace YummyrDataApi.ModelBuilders
 {
-    public class RecipeModelBuilder
+    public class RecipeModelBuilder : IRecipeModelBuilder
     {
         public RecipeModelBuilder()
         {
         }
 
         public RecipeModel Build(
-            Recipe recipe, 
+            Recipe recipe,
             IEnumerable<IngredientQuantity> ingredientQuantities,
             IEnumerable<Ingredient> ingredients,
             IEnumerable<RecipeStep> recipeSteps)
@@ -27,7 +27,7 @@ namespace YummyrDataApi.ModelBuilders
 
         private List<IngredientQuantityModel> GetIngredientQuantityModels(IEnumerable<IngredientQuantity> ingredientQuantities, IEnumerable<Ingredient> ingredients)
         {
-            return ingredientQuantities.Select(ingredientQuantity => 
+            return ingredientQuantities.Select(ingredientQuantity =>
                 new IngredientQuantityModel
                 {
                     IngredientQuantity = ingredientQuantity,

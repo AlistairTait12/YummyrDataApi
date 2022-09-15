@@ -11,21 +11,27 @@ namespace YummyrDataApi.Controllers
     public class RecipeController : ControllerBase
     {
         private readonly YummyrContext _context;
-        private readonly RecipeModelBuilder _recipeModelBuilder;
-        private readonly RecipeRepository _recipeRepository;
-        private readonly RecipeStepRepository _recipeStepRepository;
-        private readonly IngredientQuantityRepository _ingredientQuantityRepository;
-        private readonly IngredientRepository _ingredientRepository;
+        private readonly IRecipeModelBuilder _recipeModelBuilder;
+        private readonly IRecipeRepository _recipeRepository;
+        private readonly IRecipeStepRepository _recipeStepRepository;
+        private readonly IIngredientQuantityRepository _ingredientQuantityRepository;
+        private readonly IIngredientRepository _ingredientRepository;
 
-        public RecipeController(YummyrContext context)
+        public RecipeController(
+            YummyrContext context,
+            IRecipeModelBuilder recipeModelBuilder,
+            IRecipeRepository recipeRepository,
+            IRecipeStepRepository recipeStepRepository,
+            IIngredientQuantityRepository ingredientQuantityRepository,
+            IIngredientRepository ingredientRepository)
         {
             _context = context;
-            _recipeModelBuilder = new RecipeModelBuilder();
+            _recipeModelBuilder = recipeModelBuilder;
 
-            _recipeRepository = new RecipeRepository(_context);
-            _recipeStepRepository = new RecipeStepRepository(_context);
-            _ingredientQuantityRepository = new IngredientQuantityRepository(_context);
-            _ingredientRepository = new IngredientRepository(_context);
+            _recipeRepository = recipeRepository;
+            _recipeStepRepository = recipeStepRepository;
+            _ingredientQuantityRepository = ingredientQuantityRepository;
+            _ingredientRepository = ingredientRepository;
         }
 
         // GET: api/recipes
