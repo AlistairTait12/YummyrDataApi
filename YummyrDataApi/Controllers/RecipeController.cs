@@ -10,7 +10,6 @@ namespace YummyrDataApi.Controllers
     [ApiController]
     public class RecipeController : ControllerBase
     {
-        private readonly YummyrContext _context;
         private readonly IRecipeModelBuilder _recipeModelBuilder;
         private readonly IRecipeRepository _recipeRepository;
         private readonly IRecipeStepRepository _recipeStepRepository;
@@ -18,14 +17,12 @@ namespace YummyrDataApi.Controllers
         private readonly IIngredientRepository _ingredientRepository;
 
         public RecipeController(
-            YummyrContext context,
             IRecipeModelBuilder recipeModelBuilder,
             IRecipeRepository recipeRepository,
             IRecipeStepRepository recipeStepRepository,
             IIngredientQuantityRepository ingredientQuantityRepository,
             IIngredientRepository ingredientRepository)
         {
-            _context = context;
             _recipeModelBuilder = recipeModelBuilder;
 
             _recipeRepository = recipeRepository;
@@ -36,7 +33,7 @@ namespace YummyrDataApi.Controllers
 
         // GET: api/recipes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Recipe>>> GetRecipes()
+        public ActionResult<IEnumerable<Recipe>> GetRecipes()
         {
             if (_recipeRepository.GetAllRecipes() is null)
             {
@@ -48,7 +45,7 @@ namespace YummyrDataApi.Controllers
 
         [HttpGet("{id}")]
         // GET: api/recipes/5
-        public async Task<ActionResult<RecipeModel>> GetRecipe(int id)
+        public ActionResult<RecipeModel> GetRecipe(int id)
         {
             var recipe = _recipeRepository.GetRecipe(id);
 
