@@ -11,6 +11,7 @@ using YummyrDataApi.Controllers;
 using YummyrDataApi.ModelBuilders;
 using YummyrDataApi.Models;
 using YummyrDataApi.Repositories;
+using YummyrDataApi.UnitOfWork;
 
 namespace YummyrDataApiTests.Controllers
 {
@@ -19,29 +20,20 @@ namespace YummyrDataApiTests.Controllers
     public class RecipeControllerTests
     {
         private IRecipeModelBuilder _recipeModelBuilder;
-        private IRecipeRepository _recipeRepository;
-        private IRecipeStepRepository _recipeStepRepository;
-        private IIngredientQuantityRepository _ingredientQuantityRepository;
-        private IIngredientRepository _ingredientRepository;
+        private IUnitOfWork _unitOfWork;
         private RecipeController _recipeController;
 
         [SetUp]
         public void SetUp()
         {
             _recipeModelBuilder = A.Fake<IRecipeModelBuilder>();
-            _recipeRepository = A.Fake<IRecipeRepository>();
-            _recipeStepRepository = A.Fake<IRecipeStepRepository>();
-            _ingredientQuantityRepository = A.Fake<IIngredientQuantityRepository>();
-            _ingredientRepository = A.Fake<IIngredientRepository>();
-
-            A.CallTo(() => _recipeRepository.GetAllRecipes()).Returns(GetTestRecipes());
+            _unitOfWork = A.Fake<IUnitOfWork>();
+            
+            A.CallTo(() => _unitOfWork.Recipes.GetAllRecipes()).Returns(GetTestRecipes());
 
             _recipeController = new RecipeController(
                 _recipeModelBuilder,
-                _recipeRepository,
-                _recipeStepRepository,
-                _ingredientQuantityRepository,
-                _ingredientRepository);
+                _unitOfWork);
         }
 
         [Test]

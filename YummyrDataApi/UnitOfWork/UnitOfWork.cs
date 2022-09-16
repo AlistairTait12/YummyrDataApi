@@ -13,6 +13,12 @@ namespace YummyrDataApi.UnitOfWork
             Ingredients = new IngredientRepository(_context);
         }
 
+        public IRecipeRepository Recipes { get; private set; }
+
+        public IRecipeStepRepository RecipeSteps { get; private set; }
+
+        public IIngredientQuantityRepository IngredientQuantities { get; private set; }
+
         public IIngredientRepository Ingredients { get; private set; }
 
         public int Complete()
