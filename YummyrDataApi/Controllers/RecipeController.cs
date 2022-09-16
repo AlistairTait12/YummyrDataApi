@@ -14,9 +14,7 @@ namespace YummyrDataApi.Controllers
         private readonly IRecipeModelBuilder _recipeModelBuilder;
         private readonly IUnitOfWork _unitOfWork;
 
-        public RecipeController(
-            IRecipeModelBuilder recipeModelBuilder,
-            IUnitOfWork unitOfWork)
+        public RecipeController(IRecipeModelBuilder recipeModelBuilder, IUnitOfWork unitOfWork)
         {
             _recipeModelBuilder = recipeModelBuilder;
             _unitOfWork = unitOfWork;
@@ -24,19 +22,14 @@ namespace YummyrDataApi.Controllers
 
         // GET: api/recipes
         [HttpGet]
-        public ActionResult<IEnumerable<Recipe>> GetRecipes()
-        {
-            if (_unitOfWork.Recipes.GetAllRecipes() is null)
-            {
-                return NotFound();
-            }
+        public IActionResult GetRecipes() =>
+            _unitOfWork.Recipes.GetAllRecipes == null
+            ? NotFound()
+            : new OkObjectResult(_unitOfWork.Recipes.GetAllRecipes().ToList());
 
-            return _unitOfWork.Recipes.GetAllRecipes().ToList();
-        }
-
-        [HttpGet("{id}")]
         // GET: api/recipes/5
-        public ActionResult<RecipeModel> GetRecipe(int id)
+        [HttpGet("{id}")]
+        public IActionResult GetRecipe(int id)
         {
             var recipe = _unitOfWork.Recipes.GetRecipe(id);
 
@@ -52,7 +45,9 @@ namespace YummyrDataApi.Controllers
             var ingredients = _unitOfWork.Ingredients
                 .GetIngredientsForIngredientQuantities(ingredientQuantities);
 
-            return _recipeModelBuilder.Build(recipe, ingredientQuantities, ingredients, recipeSteps);
+            var recipeModel = _recipeModelBuilder.Build(recipe, ingredientQuantities, ingredients, recipeSteps);
+
+            return new OkObjectResult(recipeModel);
         }
     }
 }

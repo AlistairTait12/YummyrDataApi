@@ -10,6 +10,9 @@ namespace YummyrDataApi.UnitOfWork
         public UnitOfWork(YummyrContext context)
         {
             _context = context;
+            Recipes = new RecipeRepository(_context);
+            RecipeSteps = new RecipeStepRepository(_context);
+            IngredientQuantities = new IngredientQuantityRepository(_context);
             Ingredients = new IngredientRepository(_context);
         }
 

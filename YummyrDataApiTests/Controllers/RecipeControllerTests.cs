@@ -40,16 +40,46 @@ namespace YummyrDataApiTests.Controllers
         public void GetRecipesGetsListOfAllRecipes()
         {
             // Arrange
-            var expected = GetTestRecipes();
+            var expected = new OkObjectResult(GetTestRecipes());
 
             // Act
             var actual = _recipeController.GetRecipes();
 
             // Assert
             actual.Should().BeEquivalentTo(expected, a => a.WithStrictOrdering());
+            A.CallTo(() => _unitOfWork.Recipes.GetAllRecipes()).MustHaveHappenedOnceExactly();
         }
 
-        public IEnumerable<Recipe> GetTestRecipes() => new List<Recipe>
+        [Ignore("Not sure how repository can be null")]
+        [Test]
+        public void GetRecipesWhenDataBaseNullReturnsNotFound()
+        {
+            // Arrange
+            A.CallTo(() => _unitOfWork.Recipes.GetAllRecipes()).Returns(null);
+            var expected = new NotFoundResult();
+
+            // Act
+            var actual = _recipeController.GetRecipes();
+
+            // Assert
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        [Test]
+        public void GetRecipeWhenNotInDataBaseReturnsNotFound()
+        {
+            // Arrange
+            A.CallTo(() => _unitOfWork.Recipes.GetRecipe(99)).Returns(null);
+            var expected = new NotFoundResult();
+
+            // Act
+            var actual = _recipeController.GetRecipe(99);
+
+            // Assert
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        public List<Recipe> GetTestRecipes() => new List<Recipe>
         {
             new Recipe { Id = 1, Title = "Apple pie" },
             new Recipe { Id = 2, Title = "Banana split" },
@@ -57,7 +87,7 @@ namespace YummyrDataApiTests.Controllers
             new Recipe { Id = 4, Title = "Durian smoothie" }
         };
 
-        public IEnumerable<Ingredient> GetTestIngredients() => new List<Ingredient>
+        public List<Ingredient> GetTestIngredients() => new List<Ingredient>
         {
             new Ingredient { Id = 1, Name = "Apples" }
         };
