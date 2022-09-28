@@ -1,16 +1,10 @@
 ﻿using FakeItEasy;
 using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
-using System;
-using System.Collections.Generic;
 using System.Diagnostics.CodeAnalysis;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using YummyrDataApi.Controllers;
 using YummyrDataApi.ModelBuilders;
 using YummyrDataApi.Models;
-using YummyrDataApi.Repositories;
 using YummyrDataApi.UnitOfWork;
 
 namespace YummyrDataApiTests.Controllers
@@ -79,7 +73,30 @@ namespace YummyrDataApiTests.Controllers
             actual.Should().BeEquivalentTo(expected);
         }
 
-        public List<Recipe> GetTestRecipes() => new List<Recipe>
+        [Test]
+        public void GetRecipeWithIdReturnsRecipe()
+        {
+            // Arrange
+            A.CallTo(() => _unitOfWork.Recipes.GetRecipe(1)).Returns(GetTestRecipes().First());
+
+            A.CallTo(() => _recipeModelBuilder.Build(
+                A<Recipe>.Ignored,
+                A<IEnumerable<IngredientQuantity>>.Ignored,
+                A<IEnumerable<Ingredient>>.Ignored,
+                A<IEnumerable<RecipeStep>>.Ignored))
+                .Returns(GetTestRecipeModel());
+
+            var expected = new OkObjectResult(GetTestRecipeModel());
+
+            // Act
+            var actual = _recipeController.GetRecipe(1);
+
+            // Assert
+            A.CallTo(() => _unitOfWork.Recipes.GetRecipe(1)).MustHaveHappenedOnceExactly();
+            actual.Should().BeEquivalentTo(expected);
+        }
+
+        private List<Recipe> GetTestRecipes() => new List<Recipe>
         {
             new Recipe { Id = 1, Title = "Apple pie" },
             new Recipe { Id = 2, Title = "Banana split" },
@@ -87,9 +104,11 @@ namespace YummyrDataApiTests.Controllers
             new Recipe { Id = 4, Title = "Durian smoothie" }
         };
 
-        public List<Ingredient> GetTestIngredients() => new List<Ingredient>
+        private RecipeModel GetTestRecipeModel() => new RecipeModel
         {
-            new Ingredient { Id = 1, Name = "Apples" }
+            Recipe = new Recipe { Id = 1, Title = "Apple pie" },
+            IngredientQuantityModels = new List<IngredientQuantityModel>(),
+            RecipeSteps = new List<RecipeStep>()
         };
     }
 }
