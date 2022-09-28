@@ -25,5 +25,17 @@ namespace YummyrDataApi.Repositories
                     .Contains(ingredient.Id))
                 .ToList();
         }
+
+        public void AddUnique(Ingredient ingredient)
+        {
+            if (YummyrContext.Ingredients
+                .Select(dbIngredient => dbIngredient.Name.ToLower())
+                .Contains(ingredient.Name.ToLower()))
+            {
+                return;
+            }
+
+            Add(ingredient);
+        }
     }
 }

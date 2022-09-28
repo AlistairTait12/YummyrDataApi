@@ -1,7 +1,4 @@
-﻿using Microsoft.AspNetCore.Http.Metadata;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.ActionConstraints;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Mvc;
 using YummyrDataApi.Models;
 using YummyrDataApi.UnitOfWork;
 
@@ -59,7 +56,7 @@ namespace YummyrDataApi.Controllers
                 return Problem("Entity set 'YummyrContext.Ingredients'  is null.");
             }
 
-            _unitOfWork.Ingredients.Add(ingredient);
+            _unitOfWork.Ingredients.AddUnique(ingredient);
             _unitOfWork.Complete();
 
             return CreatedAtAction("GetIngredient", new { id = ingredient.Id }, ingredient);
