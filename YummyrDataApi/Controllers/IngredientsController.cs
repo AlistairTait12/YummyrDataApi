@@ -1,6 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Http.Metadata;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.ActionConstraints;
 using Microsoft.EntityFrameworkCore;
 using YummyrDataApi.Models;
+using YummyrDataApi.UnitOfWork;
 
 namespace YummyrDataApi.Controllers
 {
@@ -8,116 +11,80 @@ namespace YummyrDataApi.Controllers
     [ApiController]
     public class IngredientsController : ControllerBase
     {
-        private readonly YummyrContext _context;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public IngredientsController(YummyrContext context)
+        public IngredientsController(IUnitOfWork unitOfWork)
         {
-            _context = context;
+            _unitOfWork = unitOfWork;
         }
 
         // GET: api/Ingredients
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Ingredient>>> GetIngredients()
+        public IActionResult GetIngredients()
         {
-            if (_context.Ingredients == null)
+            if (_unitOfWork.Ingredients is null)
             {
                 return NotFound();
             }
 
-            return await _context.Ingredients.ToListAsync();
+            return new OkObjectResult(_unitOfWork.Ingredients.GetAll());
         }
 
         // GET: api/Ingredients/5
         [HttpGet("{id}")]
-        public async Task<ActionResult<Ingredient>> GetIngredient(int id)
+        public IActionResult GetIngredient(int id)
         {
-            if (_context.Ingredients == null)
+            if (_unitOfWork.Ingredients is null)
             {
               return NotFound();
             }
 
-            var ingredient = await _context.Ingredients.FindAsync(id);
+            var ingredient = _unitOfWork.Ingredients.Get(id);
 
-            if (ingredient == null)
+            if (ingredient is null)
             {
                 return NotFound();
             }
 
-            return ingredient;
-        }
-
-        // PUT: api/Ingredients/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutIngredient(int id, Ingredient ingredient)
-        {
-            if (id != ingredient.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(ingredient).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!IngredientExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
+            return new OkObjectResult(ingredient);
         }
 
         // POST: api/Ingredients
         // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
         [HttpPost]
-        public async Task<ActionResult<Ingredient>> PostIngredient(Ingredient ingredient)
+        public IActionResult PostIngredient(Ingredient ingredient)
         {
-            if (_context.Ingredients == null)
+            if (_unitOfWork.Ingredients is null)
             {
                 return Problem("Entity set 'YummyrContext.Ingredients'  is null.");
             }
 
-            _context.Ingredients.Add(ingredient);
-            await _context.SaveChangesAsync();
+            _unitOfWork.Ingredients.Add(ingredient);
+            _unitOfWork.Complete();
 
             return CreatedAtAction("GetIngredient", new { id = ingredient.Id }, ingredient);
         }
 
         // DELETE: api/Ingredients/5
         [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteIngredient(int id)
+        public IActionResult DeleteIngredient(int id)
         {
-            if (_context.Ingredients == null)
+            if (_unitOfWork.Ingredients is null)
             {
                 return NotFound();
             }
 
-            var ingredient = await _context.Ingredients.FindAsync(id);
+            var ingredient = _unitOfWork.Ingredients.Get(id);
 
-            if (ingredient == null)
+            if (ingredient is null)
             {
                 return NotFound();
             }
 
-            _context.Ingredients.Remove(ingredient);
-            await _context.SaveChangesAsync();
+            _unitOfWork.Ingredients.Remove(ingredient);
+            _unitOfWork.Complete();
 
-            return NoContent();
-        }
-
-        private bool IngredientExists(int id)
-        {
-            return (_context.Ingredients?.Any(e => e.Id == id)).GetValueOrDefault();
+            return new NoContentResult();
         }
     }
 }

@@ -49,5 +49,10 @@ namespace YummyrDataApi.Controllers
 
             return new OkObjectResult(recipeModel);
         }
+
+        public void PostRecipe(RecipeModel recipeModel)
+        {
+            throw new NotImplementedException();
+        }
     }
 }
