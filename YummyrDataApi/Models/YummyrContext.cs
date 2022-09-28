@@ -16,7 +16,7 @@ namespace YummyrDataApi.Models
 
         public DbSet<RecipeStep>? RecipeSteps { get; set; } = null;
 
-        public DbSet<IngredientQuantity> IngredientQuantities { get; set; } = null;
+        public DbSet<IngredientQuantity>? IngredientQuantities { get; set; } = null;
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {

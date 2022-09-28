@@ -2,6 +2,8 @@
 using Microsoft.EntityFrameworkCore;
 using YummyrDataApi.ModelBuilders;
 using YummyrDataApi.Models;
+using YummyrDataApi.Repositories;
+using YummyrDataApi.UnitOfWork;
 
 namespace YummyrDataApi.Controllers
 {
@@ -9,56 +11,43 @@ namespace YummyrDataApi.Controllers
     [ApiController]
     public class RecipeController : ControllerBase
     {
-        private readonly YummyrContext _context;
-        private readonly RecipeModelBuilder _recipeModelBuilder;
+        private readonly IRecipeModelBuilder _recipeModelBuilder;
+        private readonly IUnitOfWork _unitOfWork;
 
-        public RecipeController(YummyrContext context)
+        public RecipeController(IRecipeModelBuilder recipeModelBuilder, IUnitOfWork unitOfWork)
         {
-            _context = context;
-            _recipeModelBuilder = new RecipeModelBuilder();
+            _recipeModelBuilder = recipeModelBuilder;
+            _unitOfWork = unitOfWork;
         }
 
         // GET: api/recipes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<Recipe>>> GetRecipes()
-        {
-            if (_context.Recipes is null)
-            {
-                return NotFound();
-            }
+        public IActionResult GetRecipes() =>
+            _unitOfWork.Recipes.GetAllRecipes == null
+            ? NotFound()
+            : new OkObjectResult(_unitOfWork.Recipes.GetAllRecipes().ToList());
 
-            return await _context.Recipes.ToListAsync();
-        }
-
-        [HttpGet("{id}")]
         // GET: api/recipes/5
-        public async Task<ActionResult<RecipeModel>> GetRecipe(int id)
+        [HttpGet("{id}")]
+        public IActionResult GetRecipe(int id)
         {
-            var recipe = _context.Recipes
-                .Where(dbRecipe => dbRecipe.Id == id).FirstOrDefault();
+            var recipe = _unitOfWork.Recipes.GetRecipe(id);
 
             if (recipe is null)
             {
                 return NotFound();
             }
 
-            var ingredientQuantities = _context.IngredientQuantities
-                .Where(dbQuantity => dbQuantity.RecipeId == id)
-                .ToList();
+            var ingredientQuantities = _unitOfWork.IngredientQuantities
+                .GetIngredientQuantitiesForRecipe(id);
+            var recipeSteps = _unitOfWork.RecipeSteps
+                .GetRecipeStepsForRecipe(id);
+            var ingredients = _unitOfWork.Ingredients
+                .GetIngredientsForIngredientQuantities(ingredientQuantities);
 
-            var recipeSteps = _context.RecipeSteps
-                .Where(dbStep => dbStep.RecipeId == id)
-                .ToList();
+            var recipeModel = _recipeModelBuilder.Build(recipe, ingredientQuantities, ingredients, recipeSteps);
 
-            var ingredients = _context.Ingredients
-                .Where(dbIngredient => 
-                ingredientQuantities
-                .Select(quantity => quantity.IngredientId)
-                .ToList()
-                .Contains(dbIngredient.Id))
-                .ToList();
-
-            return _recipeModelBuilder.Build(recipe, ingredientQuantities, ingredients, recipeSteps);
+            return new OkObjectResult(recipeModel);
         }
     }
 }
