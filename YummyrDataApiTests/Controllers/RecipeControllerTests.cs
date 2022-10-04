@@ -97,6 +97,7 @@ namespace YummyrDataApiTests.Controllers
             actual.Should().BeEquivalentTo(expected);
         }
 
+        [Ignore("Handler needs writing first")]
         [Test]
         public void PostRecipeCreatesARecipeInTheRepository()
         {

@@ -17,7 +17,7 @@ namespace YummyrDataApiTests.Controllers
         [SetUp]
         public void SetUp()
         {
-            _ingredientsController = new IngredientsController();
+            // _ingredientsController = new IngredientsController();
         }
     }
 }
