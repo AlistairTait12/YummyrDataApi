@@ -4,7 +4,7 @@ using YummyrDataApi.UnitOfWork;
 
 namespace YummyrDataApi.DatabaseHandlers
 {
-    public class RepositoryHandler : IRecipeDatabaseWriter
+    public class RepositoryHandler : IRepositoryHandler
     {
         private readonly IUnitOfWork _unitOfWork;
 

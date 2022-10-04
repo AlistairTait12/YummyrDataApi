@@ -3,6 +3,7 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
 using YummyrDataApi.Controllers;
+using YummyrDataApi.DatabaseHandlers;
 using YummyrDataApi.enums;
 using YummyrDataApi.ModelBuilders;
 using YummyrDataApi.Models;
@@ -16,6 +17,7 @@ namespace YummyrDataApiTests.Controllers
     {
         private IRecipeModelBuilder _recipeModelBuilder;
         private IUnitOfWork _unitOfWork;
+        private IRepositoryHandler _repositoryHandler;
         private RecipeController _recipeController;
 
         [SetUp]
@@ -23,12 +25,14 @@ namespace YummyrDataApiTests.Controllers
         {
             _recipeModelBuilder = A.Fake<IRecipeModelBuilder>();
             _unitOfWork = A.Fake<IUnitOfWork>();
+            _repositoryHandler = A.Fake<IRepositoryHandler>();
 
             A.CallTo(() => _unitOfWork.Recipes.GetAllRecipes()).Returns(GetTestRecipes());
 
             _recipeController = new RecipeController(
                 _recipeModelBuilder,
-                _unitOfWork);
+                _unitOfWork,
+                _repositoryHandler);
         }
 
         [Test]
@@ -97,30 +101,17 @@ namespace YummyrDataApiTests.Controllers
             actual.Should().BeEquivalentTo(expected);
         }
 
-        [Ignore("Handler needs writing first")]
         [Test]
         public void PostRecipeCreatesARecipeInTheRepository()
         {
             // Arrange
             var recipeModel = GetTestPostRecipeModel();
-            var expectedIngredientsList = GetTestIngredients();
-            expectedIngredientsList.Add(new() { Id = 4, Name = "Lychee" });
 
             // Act
             _recipeController.PostRecipe(recipeModel);
 
             // Assert
-            A.CallTo(() => _unitOfWork.Recipes.Add(recipeModel.Recipe)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => _unitOfWork.RecipeSteps.AddRange(recipeModel.RecipeSteps)).MustHaveHappenedOnceExactly();
-            A.CallTo(() => _unitOfWork.IngredientQuantities
-                .AddRange(recipeModel.IngredientQuantityModels
-                .Select(model => model.IngredientQuantity)))
-                .MustHaveHappenedOnceExactly();
-            A.CallTo(() => _unitOfWork.Ingredients
-                .AddRange(recipeModel.IngredientQuantityModels
-                .Select(model => model.Ingredient)))
-                .MustHaveHappenedOnceExactly();
-            A.CallTo(() => _unitOfWork.Complete()).MustHaveHappenedOnceExactly();
+            A.CallTo(() => _repositoryHandler.WriteRecipeData(recipeModel)).MustHaveHappenedOnceExactly();
         }
 
         private List<Recipe> GetTestRecipes() => new()

@@ -2,7 +2,7 @@
 
 namespace YummyrDataApi.DatabaseHandlers
 {
-    public interface IRecipeDatabaseWriter
+    public interface IRepositoryHandler
     {
         void WriteRecipeData(RecipeModel postModel);
     }
