@@ -1,9 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
 using YummyrDataApi.DatabaseHandlers;
 using YummyrDataApi.ModelBuilders;
 using YummyrDataApi.Models;
-using YummyrDataApi.Repositories;
 using YummyrDataApi.UnitOfWork;
 
 namespace YummyrDataApi.Controllers
@@ -57,7 +55,7 @@ namespace YummyrDataApi.Controllers
         }
 
         [HttpPost]
-        public void PostRecipe(RecipeModel recipeModel)
+        public void PostRecipe([FromBody] RecipeModel recipeModel)
         {
             _repositoryHandler.WriteRecipeData(recipeModel);
         }

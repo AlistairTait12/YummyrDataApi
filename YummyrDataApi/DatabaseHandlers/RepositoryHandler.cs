@@ -26,6 +26,7 @@ namespace YummyrDataApi.DatabaseHandlers
         private int WriteRecipe(Recipe recipe)
         {
             _unitOfWork.Recipes.Add(recipe);
+            _unitOfWork.Complete();
 
             return recipe.Id;
         }

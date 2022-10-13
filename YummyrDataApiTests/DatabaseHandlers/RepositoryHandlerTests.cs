@@ -55,6 +55,7 @@ namespace YummyrDataApiTests.DatabaseHandlers
 
             // Assert
             A.CallTo(() => _unitOfWork.Recipes.Add(recipeToPost.Recipe)).MustHaveHappenedOnceExactly();
+            A.CallTo(() => _unitOfWork.Complete()).MustHaveHappenedTwiceExactly();
         }
 
         [Test]
@@ -97,6 +98,7 @@ namespace YummyrDataApiTests.DatabaseHandlers
             A.CallTo(() => _unitOfWork.IngredientQuantities
                 .Add(recipeToPost.IngredientQuantityModels.FirstOrDefault(model => model.Ingredient.Name == "Pineapple").IngredientQuantity))
                 .MustHaveHappenedOnceExactly();
+            A.CallTo(() => _unitOfWork.Complete()).MustHaveHappenedTwiceExactly();
         }
 
         [Test]
@@ -118,6 +120,7 @@ namespace YummyrDataApiTests.DatabaseHandlers
             A.CallTo(() => _unitOfWork.RecipeSteps
                 .Add(recipeToPost.RecipeSteps.FirstOrDefault(step => step.StepOrder == 2)))
                 .MustHaveHappenedOnceExactly();
+            A.CallTo(() => _unitOfWork.Complete()).MustHaveHappenedTwiceExactly();
         }
 
         private List<Ingredient> GetIngredientsAlreadyInDataBase() => new()
