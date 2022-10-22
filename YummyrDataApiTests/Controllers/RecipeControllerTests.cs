@@ -3,6 +3,8 @@ using FluentAssertions;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics.CodeAnalysis;
 using YummyrDataApi.Controllers;
+using YummyrDataApi.DatabaseHandlers;
+using YummyrDataApi.enums;
 using YummyrDataApi.ModelBuilders;
 using YummyrDataApi.Models;
 using YummyrDataApi.UnitOfWork;
@@ -15,6 +17,7 @@ namespace YummyrDataApiTests.Controllers
     {
         private IRecipeModelBuilder _recipeModelBuilder;
         private IUnitOfWork _unitOfWork;
+        private IRepositoryHandler _repositoryHandler;
         private RecipeController _recipeController;
 
         [SetUp]
@@ -22,12 +25,14 @@ namespace YummyrDataApiTests.Controllers
         {
             _recipeModelBuilder = A.Fake<IRecipeModelBuilder>();
             _unitOfWork = A.Fake<IUnitOfWork>();
-            
+            _repositoryHandler = A.Fake<IRepositoryHandler>();
+
             A.CallTo(() => _unitOfWork.Recipes.GetAllRecipes()).Returns(GetTestRecipes());
 
             _recipeController = new RecipeController(
                 _recipeModelBuilder,
-                _unitOfWork);
+                _unitOfWork,
+                _repositoryHandler);
         }
 
         [Test]
@@ -96,7 +101,20 @@ namespace YummyrDataApiTests.Controllers
             actual.Should().BeEquivalentTo(expected);
         }
 
-        private List<Recipe> GetTestRecipes() => new List<Recipe>
+        [Test]
+        public void PostRecipeCreatesARecipeInTheRepository()
+        {
+            // Arrange
+            var recipeModel = GetTestPostRecipeModel();
+
+            // Act
+            _recipeController.PostRecipe(recipeModel);
+
+            // Assert
+            A.CallTo(() => _repositoryHandler.WriteRecipeData(recipeModel)).MustHaveHappenedOnceExactly();
+        }
+
+        private List<Recipe> GetTestRecipes() => new()
         {
             new Recipe { Id = 1, Title = "Apple pie" },
             new Recipe { Id = 2, Title = "Banana split" },
@@ -104,11 +122,42 @@ namespace YummyrDataApiTests.Controllers
             new Recipe { Id = 4, Title = "Durian smoothie" }
         };
 
-        private RecipeModel GetTestRecipeModel() => new RecipeModel
+        private List<Ingredient> GetTestIngredients() => new()
+        {
+            new() { Id = 1, Name = "Apple" },
+            new() { Id = 2, Name = "Pastry" },
+            new() { Id = 3, Name = "Sugar" }
+        };
+
+        private RecipeModel GetTestRecipeModel() => new()
         {
             Recipe = new Recipe { Id = 1, Title = "Apple pie" },
             IngredientQuantityModels = new List<IngredientQuantityModel>(),
             RecipeSteps = new List<RecipeStep>()
         };
+
+        private RecipeModel GetTestPostRecipeModel() => new()
+        {
+            Recipe = new() { Title = "Lychee sorbet" },
+            RecipeSteps = new List<RecipeStep>
+            {
+                new() { StepOrder = 1, StepText = "Step 1" },
+                new() { StepOrder = 2, StepText = "Step 2" },
+                new() { StepOrder = 3, StepText = "Eat it" },
+            },
+            IngredientQuantityModels = new List<IngredientQuantityModel>
+            {
+                new()
+                {
+                    IngredientQuantity = new() 
+                    {
+                        Quantity = 40,
+                        UnitOfMeasure = UnitOfMeasure.G
+                    },
+                    Ingredient = new() { Name = "Lychee" }
+                }
+            }
+        };
+
     }
 }

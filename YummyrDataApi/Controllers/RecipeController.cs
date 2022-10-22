@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+using YummyrDataApi.DatabaseHandlers;
 using YummyrDataApi.ModelBuilders;
 using YummyrDataApi.Models;
-using YummyrDataApi.Repositories;
 using YummyrDataApi.UnitOfWork;
 
 namespace YummyrDataApi.Controllers
@@ -13,11 +12,16 @@ namespace YummyrDataApi.Controllers
     {
         private readonly IRecipeModelBuilder _recipeModelBuilder;
         private readonly IUnitOfWork _unitOfWork;
+        private readonly IRepositoryHandler _repositoryHandler;
 
-        public RecipeController(IRecipeModelBuilder recipeModelBuilder, IUnitOfWork unitOfWork)
+        public RecipeController(
+            IRecipeModelBuilder recipeModelBuilder,
+            IUnitOfWork unitOfWork,
+            IRepositoryHandler repositoryHandler)
         {
             _recipeModelBuilder = recipeModelBuilder;
             _unitOfWork = unitOfWork;
+            _repositoryHandler = repositoryHandler;
         }
 
         // GET: api/recipes
@@ -48,6 +52,12 @@ namespace YummyrDataApi.Controllers
             var recipeModel = _recipeModelBuilder.Build(recipe, ingredientQuantities, ingredients, recipeSteps);
 
             return new OkObjectResult(recipeModel);
+        }
+
+        [HttpPost]
+        public void PostRecipe([FromBody] RecipeModel recipeModel)
+        {
+            _repositoryHandler.WriteRecipeData(recipeModel);
         }
     }
 }

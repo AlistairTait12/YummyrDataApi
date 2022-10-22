@@ -7,5 +7,7 @@ namespace YummyrDataApi.Repositories
         IEnumerable<Ingredient> GetIngredientsBeginningWith(char letter);
 
         IEnumerable<Ingredient> GetIngredientsForIngredientQuantities(IEnumerable<IngredientQuantity> ingredientQuantities);
+
+        void AddUnique(Ingredient ingredient);
     }
 }

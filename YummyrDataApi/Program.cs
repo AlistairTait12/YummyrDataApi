@@ -1,4 +1,5 @@
 using Microsoft.EntityFrameworkCore;
+using YummyrDataApi.DatabaseHandlers;
 using YummyrDataApi.ModelBuilders;
 using YummyrDataApi.Models;
 using YummyrDataApi.Repositories;
@@ -22,6 +23,7 @@ builder.Services.AddTransient<IRecipeStepRepository, RecipeStepRepository>();
 builder.Services.AddTransient<IIngredientQuantityRepository, IngredientQuantityRepository>();
 builder.Services.AddTransient<IIngredientRepository, IngredientRepository>();
 builder.Services.AddTransient<IUnitOfWork, UnitOfWork>();
+builder.Services.AddTransient<IRepositoryHandler, RepositoryHandler>();
 
 var app = builder.Build();
 
